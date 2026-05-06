@@ -37,9 +37,13 @@
 
     <script>
         var map = L.map('map').setView([15.0, 31.0], 5);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        var baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap'
         }).addTo(map);
+
+        // Layer Groups
+        var localityLayer = L.layerGroup().addTo(map);
+        var schoolsLayer = L.layerGroup();
 
         function getColor(risk) {
             if (!risk) return '#31a354';
@@ -47,15 +51,14 @@
             return r === 'high' ? '#e31a1c' : r === 'medium' ? '#fd8d3c' : '#31a354';
         }
 
-        // BURAYA DİKKAT: CSV'ni GitHub RAW adresinden doğrudan çekiyoruz!
+        // 1. Load Locality Data (data.csv)
         var csvUrl = "data.csv";
-
         Papa.parse(csvUrl, {
             download: true,
             header: true,
             dynamicTyping: true,
             skipEmptyLines: true,
-            transformHeader: function(h) { return h.trim(); }, // Başlıktaki boşlukları temizler
+            transformHeader: function(h) { return h.trim(); },
             complete: function(results) {
                 results.data.forEach(function(row) {
                     if(row.Latitude && row.Longitude) {
@@ -70,7 +73,7 @@
                             weight: 1,
                             opacity: 1,
                             fillOpacity: 0.8
-                        }).addTo(map);
+                        }).addTo(localityLayer);
 
                         marker.bindPopup(`
                             <strong style="font-size:14px;">${row.School_Name}</strong><br><br>
@@ -87,11 +90,50 @@
                         `);
                     }
                 });
-            },
-            error: function(err) {
-                console.log("CSV Yükleme Hatası:", err);
             }
         });
+
+        // 2. Load School Facilities (GeoJSON)
+        fetch('data/sudan_schools.json')
+            .then(res => res.json())
+            .then(data => {
+                L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.circleMarker(latlng, {
+                            radius: 4,
+                            fillColor: "#2980b9",
+                            color: "#fff",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.9
+                        });
+                    },
+                    onEachFeature: function (feature, layer) {
+                        // Prioritize English Name
+                        var name = feature.properties['name:en'] || 
+                                   feature.properties['name'] || 
+                                   feature.properties['name:ar'] || 
+                                   "Unnamed School";
+                        
+                        layer.bindPopup(`
+                            <div style="font-family: sans-serif;">
+                                <b style="color:#2980b9;">School Facility</b><br>
+                                <strong>${name}</strong><br>
+                                <hr style="margin:5px 0;">
+                                <small>Type: ${feature.properties.amenity || 'N/A'}</small><br>
+                                <small>OSM ID: ${feature.properties.osm_id}</small>
+                            </div>
+                        `);
+                    }
+                }).addTo(schoolsLayer);
+            });
+
+        // Layer Control
+        var overlayMaps = {
+            "Locality Metrics": localityLayer,
+            "School Facilities (OSM)": schoolsLayer
+        };
+        L.control.layers(null, overlayMaps, { collapsed: false }).addTo(map);
     </script>
 </body>
 </html>
