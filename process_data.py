@@ -4,7 +4,7 @@ import collections
 
 # Load IDP data
 idp_data = collections.defaultdict(lambda: {"count": 0, "date": ""})
-with open('public/data/sudan-idps.csv', 'r') as f:
+with open('raw-data/sudan-idps.csv', 'r') as f:
     reader = csv.DictReader(f)
     for row in reader:
         pcode = row.get('admin2Pcode')
@@ -18,7 +18,7 @@ with open('public/data/sudan-idps.csv', 'r') as f:
 # Load Conflict data (UCDP)
 conflict_data = collections.defaultdict(lambda: {"events": 0, "deaths": 0})
 # We'll use the names to match later if possible, but for now let's just count
-with open('public/data/sudan-conflict.csv', 'r') as f:
+with open('raw-data/sudan-conflict-ucdp.csv', 'r') as f:
     reader = csv.DictReader(f)
     for row in reader:
         adm2 = row.get('adm_2')
@@ -30,7 +30,8 @@ with open('public/data/sudan-conflict.csv', 'r') as f:
             conflict_data[adm2]["deaths"] += deaths
 
 # Load GeoJSON to create the mapping and final output
-with open('public/data/sdn_admin2.json', 'r') as f:
+# Using the original OCHA GeoJSON from raw-data
+with open('raw-data/admin_boundaries/sdn_admin2.geojson', 'r') as f:
     geojson = json.load(f)
 
 # Join data into GeoJSON properties
@@ -48,9 +49,7 @@ for feature in geojson['features']:
     feature['properties']['conflict_events'] = c_info['events']
     feature['properties']['conflict_deaths'] = c_info['deaths']
     
-    # Calculate "Safety Score" (lower is better/safer, but we'll invert it for the map)
-    # High safety = low conflict + moderate IDP influx (showing it's a destination)
-    # This is a simplified proxy
+    # Calculate "Safety Score"
     safety = 100
     if c_info['events'] > 0:
         safety -= min(c_info['events'] * 10, 50)
@@ -59,7 +58,8 @@ for feature in geojson['features']:
     
     feature['properties']['safety_score'] = max(safety, 0)
 
-with open('public/data/sudan_map_data.json', 'w') as f:
+# Write to the tracked data directory
+with open('data/sudan_map_data.json', 'w') as f:
     json.dump(geojson, f)
 
-print("Processed data saved to public/data/sudan_map_data.json")
+print("Processed data saved to data/sudan_map_data.json")
