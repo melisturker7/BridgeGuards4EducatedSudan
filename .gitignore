@@ -1,6 +1,6 @@
 /raw-data/
 *.zip
 *.xlsx
-*.csv
+!data.csv
 __pycache__/
 .DS_Store

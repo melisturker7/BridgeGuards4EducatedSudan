@@ -3,162 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sudan Education Continuity Map - Safe Learning Corridors</title>
+    <title>BridgeGuards4EducatedSudan - Educational Continuity Map</title>
+    
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
     <style>
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f9; }
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
         #map { height: 100vh; width: 100%; }
-        .info { padding: 12px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.9); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; color: #333; width: 250px; }
-        .info h4 { margin: 0 0 5px; color: #d9534f; }
-        .legend { line-height: 18px; color: #555; background: white; padding: 10px; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.2); }
-        .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }
-        .header-box { position: absolute; top: 10px; left: 50px; z-index: 1000; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 8px; border-left: 5px solid #d9534f; max-width: 400px; }
-        .header-box h2 { margin: 0; font-size: 18px; }
-        .header-box p { margin: 5px 0 0; font-size: 13px; color: #666; }
+        
+        .header-box {
+            position: absolute; top: 15px; left: 60px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-left: 6px solid #d9534f;
+            max-width: 420px;
+        }
+        .header-box h2 { margin: 0; color: #333; font-size: 20px; }
+        .header-box p { margin: 8px 0 0; color: #666; font-size: 13px; line-height: 1.4; }
+
+        .info {
+            padding: 12px; background: white; background: rgba(255,255,255,0.95);
+            box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 5px;
+            font-size: 14px; color: #333; line-height: 1.6;
+        }
+        .info h4 { margin: 0 0 10px; color: #d9534f; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        
+        .legend { line-height: 20px; color: #555; }
+        .legend i { width: 18px; height: 18px; float: left; margin-right: 10px; opacity: 0.8; border-radius: 2px; }
     </style>
 </head>
 <body>
 
 <div class="header-box">
-    <h2>Sudan: Safe Learning Corridors</h2>
-    <p>Overlay of 2024-2026 Conflict Intensity and IDP Influx to identify education continuity zones for displaced children.</p>
+    <h2>Sudan: Educational Continuity Map</h2>
+    <p>Monitoring conflict risks and IDP student influx to safeguard learning environments for displaced children.</p>
 </div>
 
 <div id="map"></div>
 
+<!-- External Libraries -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-    const map = L.map('map').setView([15.0, 30.0], 6);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
+<script>
+    // Initialize Map
+    const map = L.map('map').setView([15.5, 30.0], 6);
+
+    // Add Base Layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // School Icon
-    const schoolIcon = L.divIcon({
-        html: '<div style="background-color: #007bff; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white;"></div>',
-        className: 'school-marker',
-        iconSize: [10, 10]
+    // Color Logic for Conflict Risk Score
+    function getRiskColor(score) {
+        return score > 80 ? '#B22222' : // FireBrick (Critical)
+               score > 60 ? '#FF4500' : // OrangeRed (High)
+               score > 40 ? '#FFD700' : // Gold (Moderate)
+               score > 20 ? '#ADFF2F' : // GreenYellow (Low)
+                            '#228B22';   // ForestGreen (Safe)
+    }
+
+    // Radius Logic based on IDP Students Added
+    function getRadius(count) {
+        return Math.sqrt(count) * 0.1 + 5;
+    }
+
+    // Load and Parse CSV Data
+    Papa.parse('data.csv', {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: function(h) {
+            return h.trim(); // Crucial: Fixes "undefined" by removing whitespace from headers
+        },
+        complete: function(results) {
+            console.log("Parsed CSV Results:", results.data);
+            
+            results.data.forEach(function(row) {
+                const lat = parseFloat(row.Latitude);
+                const lon = parseFloat(row.Longitude);
+                const idpCount = parseInt(row.IDP_Students_Added) || 0;
+                const riskScore = parseFloat(row.Conflict_Risk_Score) || 0;
+                const locality = row.Locality || "Unknown Locality";
+                const state = row.State || "Unknown State";
+
+                if (!isNaN(lat) && !isNaN(lon)) {
+                    const circle = L.circleMarker([lat, lon], {
+                        radius: getRadius(idpCount),
+                        fillColor: getRiskColor(riskScore),
+                        color: "#fff",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map);
+
+                    // Robust Popup Template
+                    const popupContent = `
+                        <div class="info">
+                            <h4>${locality}</h4>
+                            <b>State:</b> ${state}<br>
+                            <b>IDP Students Added:</b> ${idpCount.toLocaleString()}<br>
+                            <b>Conflict Risk Score:</b> ${riskScore.toFixed(1)}%<br>
+                            <hr>
+                            <small>Conflict Events (Recent): ${row.Conflict_Events || 0}</small><br>
+                            <small>Fatalities (Recent): ${row.Conflict_Deaths || 0}</small>
+                        </div>
+                    `;
+                    circle.bindPopup(popupContent);
+                    
+                    // Hover effects
+                    circle.on('mouseover', function (e) {
+                        this.openPopup();
+                        this.setStyle({ weight: 3, color: '#666' });
+                    });
+                    circle.on('mouseout', function (e) {
+                        this.setStyle({ weight: 1, color: '#fff' });
+                    });
+                }
+            });
+        },
+        error: function(err) {
+            console.error("Error parsing CSV:", err);
+        }
     });
 
-    // Layer Groups
-    const schoolsLayer = L.layerGroup();
-    const safetyLayer = L.layerGroup().addTo(map);
-
-    // Control that shows state info on hover
-    const info = L.control();
-
-    info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info');
-        this.update();
-        return this._div;
-    };
-
-    info.update = function (props) {
-        this._div.innerHTML = '<h4>Locality Details</h4>' +  (props ?
-            '<b>' + props.adm2_name + '</b><br />' +
-            'State: ' + props.adm1_name + '<br />' +
-            'IDP Count: ' + props.idp_count.toLocaleString() + '<br />' +
-            'Recent Conflict Events: ' + props.conflict_events + '<br />' +
-            'Recent Fatalities: ' + props.conflict_deaths + '<br />' +
-            '<b>Safety Score: ' + Math.round(props.safety_score) + '%</b>'
-            : 'Hover over a locality');
-    };
-
-    info.addTo(map);
-
-    // Get color based on safety score
-    function getColor(d) {
-        return d > 80 ? '#228B22' : // ForestGreen
-               d > 60 ? '#9ACD32' : // YellowGreen
-               d > 40 ? '#FFD700' : // Gold
-               d > 20 ? '#FF8C00' : // DarkOrange
-                        '#B22222';   // FireBrick
-    }
-
-    function style(feature) {
-        return {
-            fillColor: getColor(feature.properties.safety_score),
-            weight: 1,
-            opacity: 1,
-            color: 'white',
-            dashArray: '3',
-            fillOpacity: 0.7
-        };
-    }
-
-    function highlightFeature(e) {
-        const layer = e.target;
-        layer.setStyle({
-            weight: 3,
-            color: '#666',
-            dashArray: '',
-            fillOpacity: 0.9
-        });
-        layer.bringToFront();
-        info.update(layer.feature.properties);
-    }
-
-    function resetHighlight(e) {
-        geojson.resetStyle(e.target);
-        info.update();
-    }
-
-    function onEachFeature(feature, layer) {
-        layer.on({
-            mouseover: highlightFeature,
-            mouseout: resetHighlight
-        });
-    }
-
-    let geojson;
-    fetch('data/sudan_map_data.json')
-        .then(response => response.json())
-        .then(data => {
-            geojson = L.geoJson(data, {
-                style: style,
-                onEachFeature: onEachFeature
-            }).addTo(safetyLayer);
-        });
-
-    // Fetch and add Schools
-    fetch('data/sudan_schools.json')
-        .then(response => response.json())
-        .then(data => {
-            L.geoJson(data, {
-                pointToLayer: function (feature, latlng) {
-                    return L.marker(latlng, { icon: schoolIcon });
-                },
-                onEachFeature: function (feature, layer) {
-                    const name = feature.properties.name || feature.properties['name:ar'] || 'Unnamed School';
-                    const type = feature.properties.amenity || 'Education Facility';
-                    layer.bindPopup(`<strong>${name}</strong><br>${type}`);
-                }
-            }).addTo(schoolsLayer);
-        });
-
-    // Layer Control
-    const overlays = {
-        "Safety Score": safetyLayer,
-        "School Facilities": schoolsLayer
-    };
-    L.control.layers(null, overlays, {collapsed: false}).addTo(map);
-
-    // Legend
-    const legend = L.control({position: 'bottomright'});
+    // Add Legend
+    const legend = L.control({ position: 'bottomright' });
 
     legend.onAdd = function (map) {
         const div = L.DomUtil.create('div', 'info legend');
         const grades = [0, 20, 40, 60, 80];
-        const labels = ['<strong>Safety Score</strong>'];
+        const labels = ['<strong>Conflict Risk Score</strong>'];
 
         for (let i = 0; i < grades.length; i++) {
             div.innerHTML +=
-                labels.push(
-                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
-                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '%' : '+%'));
+                '<i style="background:' + getRiskColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '%' : '+%') + '<br>';
         }
-        div.innerHTML = labels.join('<br>');
         return div;
     };
 
