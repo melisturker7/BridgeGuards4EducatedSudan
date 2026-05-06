@@ -30,6 +30,13 @@
             <span class="dot" style="background-color: #31a354;"></span> Low Risk / High Priority<br>
             <span class="dot" style="background-color: #fd8d3c;"></span> Medium Risk / Monitoring<br>
             <span class="dot" style="background-color: #e31a1c;"></span> High Risk / Suspended
+            <hr>
+            <div style="font-size: 12px; margin-top: 5px;">
+                <b>Student/Teacher Ratio (Shape):</b><br>
+                <span style="font-size: 16px;">▲</span> 0-35 (Low)<br>
+                <span style="font-size: 16px;">■</span> 36-70 (Medium)<br>
+                <span style="font-size: 16px;">●</span> 71+ (High)
+            </div>
         </div>
     </div>
     
@@ -51,6 +58,30 @@
             return r === 'high' ? '#e31a1c' : r === 'medium' ? '#fd8d3c' : '#31a354';
         }
 
+        function getShapeIcon(ratio, color, size) {
+            var ratioVal = parseFloat(ratio) || 0;
+            var pixelSize = size * 2;
+            var svg = '';
+            
+            if (ratioVal <= 35) {
+                // Triangle
+                svg = `<svg width="${pixelSize}" height="${pixelSize}" viewBox="0 0 100 100"><path d="M 50,5 L 95,90 L 5,90 Z" fill="${color}" stroke="#000" stroke-width="5" fill-opacity="0.8"/></svg>`;
+            } else if (ratioVal <= 70) {
+                // Square
+                svg = `<svg width="${pixelSize}" height="${pixelSize}" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" fill="${color}" stroke="#000" stroke-width="5" fill-opacity="0.8"/></svg>`;
+            } else {
+                // Circle
+                svg = `<svg width="${pixelSize}" height="${pixelSize}" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="${color}" stroke="#000" stroke-width="5" fill-opacity="0.8"/></svg>`;
+            }
+            
+            return L.divIcon({
+                html: svg,
+                className: '',
+                iconSize: [pixelSize, pixelSize],
+                iconAnchor: [size, size]
+            });
+        }
+
         // 1. Load Locality Data (data.csv)
         var csvUrl = "data.csv";
         Papa.parse(csvUrl, {
@@ -66,13 +97,8 @@
                         var idpCount = row.IDP_Students_Added || 0;
                         var radiusSize = Math.sqrt(idpCount) * 0.08 + 6;
 
-                        var marker = L.circleMarker([row.Latitude, row.Longitude], {
-                            radius: radiusSize,
-                            fillColor: riskColor,
-                            color: "#000",
-                            weight: 1,
-                            opacity: 1,
-                            fillOpacity: 0.8
+                        var marker = L.marker([row.Latitude, row.Longitude], {
+                            icon: getShapeIcon(row.Student_Teacher_Ratio, riskColor, radiusSize)
                         }).addTo(localityLayer);
 
                         marker.bindPopup(`
