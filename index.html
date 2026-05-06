@@ -1,160 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>BridgeGuards Sudan - Decision Support Map</title>
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BridgeGuards4EducatedSudan - Educational Continuity Map</title>
-    
-    <!-- Leaflet CSS -->
+    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- PapaParse for CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; }
-        #map { height: 100vh; width: 100%; }
-        
-        .header-box {
-            position: absolute; top: 15px; left: 60px; z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px; border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border-left: 6px solid #d9534f;
-            max-width: 420px;
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #map { height: 100vh; width: 100vw; }
+        .legend {
+            position: absolute; top: 20px; right: 20px; z-index: 1000;
+            background: white; padding: 20px; border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3); max-width: 250px;
         }
-        .header-box h2 { margin: 0; color: #333; font-size: 20px; }
-        .header-box p { margin: 8px 0 0; color: #666; font-size: 13px; line-height: 1.4; }
-
-        .info {
-            padding: 12px; background: white; background: rgba(255,255,255,0.95);
-            box-shadow: 0 0 15px rgba(0,0,0,0.1); border-radius: 5px;
-            font-size: 14px; color: #333; line-height: 1.6;
-        }
-        .info h4 { margin: 0 0 10px; color: #d9534f; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        
-        .legend { line-height: 20px; color: #555; }
-        .legend i { width: 18px; height: 18px; float: left; margin-right: 10px; opacity: 0.8; border-radius: 2px; }
+        .legend h2 { margin: 0 0 10px; font-size: 18px; color: #2c3e50; }
+        .dot { height: 12px; width: 12px; border-radius: 50%; display: inline-block; margin-right: 8px; }
     </style>
 </head>
 <body>
+    <div class="legend">
+        <h2>BridgeGuards Sudan</h2>
+        <p style="font-size: 13px; color: #7f8c8d;">Prioritizing schools based on IDP influx and conflict risk.</p>
+        <hr>
+        <div style="font-size: 14px; line-height: 2;">
+            <span class="dot" style="background-color: #31a354;"></span> Low Risk / High Priority<br>
+            <span class="dot" style="background-color: #fd8d3c;"></span> Medium Risk / Monitoring<br>
+            <span class="dot" style="background-color: #e31a1c;"></span> High Risk / Suspended
+        </div>
+    </div>
+    
+    <div id="map"></div>
 
-<div class="header-box">
-    <h2>Sudan: Educational Continuity Map</h2>
-    <p>Monitoring conflict risks and IDP student influx to safeguard learning environments for displaced children.</p>
-</div>
+    <script>
+        var map = L.map('map').setView([15.0, 31.0], 5);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
 
-<div id="map"></div>
-
-<!-- External Libraries -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
-<script>
-    // Initialize Map
-    const map = L.map('map').setView([15.5, 30.0], 6);
-
-    // Add Base Layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Color Logic for Conflict Risk Score
-    function getRiskColor(score) {
-        if (typeof score === 'string') {
-            const s = score.toLowerCase();
-            if (s.includes('high') || s.includes('danger')) return '#B22222';
-            if (s.includes('medium') || s.includes('monitor')) return '#FFD700';
-            if (s.includes('low') || s.includes('safe')) return '#228B22';
+        function getColor(risk) {
+            if (!risk) return '#31a354';
+            var r = risk.trim().toLowerCase();
+            return r === 'high' ? '#e31a1c' : r === 'medium' ? '#fd8d3c' : '#31a354';
         }
-        return score > 80 ? '#B22222' : 
-               score > 60 ? '#FF4500' : 
-               score > 40 ? '#FFD700' : 
-               score > 20 ? '#ADFF2F' : 
-                            '#228B22';
-    }
 
-    // Radius Logic based on IDP Students Added
-    function getRadius(count) {
-        return Math.sqrt(count) * 0.2 + 8; // Slightly larger for visibility
-    }
+        // BURAYA DİKKAT: CSV'ni GitHub RAW adresinden doğrudan çekiyoruz!
+        var csvUrl = "https://raw.githubusercontent.com/melisturker7/BridgeGuards4EducatedSudan/main/data.csv";
 
-    // Load and Parse CSV Data
-    Papa.parse('data.csv', {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        transformHeader: function(h) {
-            return h.trim();
-        },
-        complete: function(results) {
-            console.log("Parsed CSV Results:", results.data);
-            
-            results.data.forEach(function(row) {
-                const lat = parseFloat(row.Latitude);
-                const lon = parseFloat(row.Longitude);
-                const idpCount = parseInt(row.IDP_Students_Added) || 0;
-                const riskLevel = row.Conflict_Risk_Score || "Unknown";
-                const schoolName = row.School_Name || "Unnamed School";
-                
-                if (!isNaN(lat) && !isNaN(lon)) {
-                    const circle = L.circleMarker([lat, lon], {
-                        radius: getRadius(idpCount),
-                        fillColor: getRiskColor(riskLevel),
-                        color: "#fff",
-                        weight: 1,
-                        opacity: 1,
-                        fillOpacity: 0.8
-                    }).addTo(map);
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            transformHeader: function(h) { return h.trim(); }, // Başlıktaki boşlukları temizler
+            complete: function(results) {
+                results.data.forEach(function(row) {
+                    if(row.Latitude && row.Longitude) {
+                        var riskColor = getColor(row.Conflict_Risk_Score);
+                        var idpCount = row.IDP_Students_Added || 0;
+                        var radiusSize = (idpCount / 40) + 8;
 
-                    // Robust Popup Template
-                    const popupContent = `
-                        <div class="info">
-                            <h4>${schoolName}</h4>
-                            <b>IDP Students Added:</b> ${idpCount.toLocaleString()}<br>
-                            <b>Conflict Risk:</b> <span style="color:${getRiskColor(riskLevel)}">${riskLevel}</span><br>
-                            <hr>
-                            <b>Action Recommendation:</b><br>
-                            <div style="margin-top:5px; padding:5px; background:#fcf8e3; border-left:3px solid #f0ad4e; font-size:12px;">
-                                ${row.Action_Recommendation || "Monitor status"}
-                            </div>
-                            <small style="display:block; margin-top:8px; color:#666;">
-                                Last Event: ${row.Last_Conflict_Event || "N/A"}
-                            </small>
-                        </div>
-                    `;
-                    circle.bindPopup(popupContent);
-                    
-                    // Hover effects
-                    circle.on('mouseover', function (e) {
-                        this.openPopup();
-                        this.setStyle({ weight: 3, color: '#666' });
-                    });
-                    circle.on('mouseout', function (e) {
-                        this.setStyle({ weight: 1, color: '#fff' });
-                    });
-                }
-            });
-        },
-        error: function(err) {
-            console.error("Error parsing CSV:", err);
-        }
-    });
+                        var marker = L.circleMarker([row.Latitude, row.Longitude], {
+                            radius: radiusSize,
+                            fillColor: riskColor,
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        }).addTo(map);
 
-    // Add Legend
-    const legend = L.control({ position: 'bottomright' });
-
-    legend.onAdd = function (map) {
-        const div = L.DomUtil.create('div', 'info legend');
-        const categories = ['High', 'Medium', 'Low'];
-        
-        div.innerHTML = '<strong>Conflict Risk Level</strong><br>';
-        categories.forEach(cat => {
-            div.innerHTML +=
-                '<i style="background:' + getRiskColor(cat) + '"></i> ' + cat + '<br>';
+                        marker.bindPopup(`
+                            <strong style="font-size:14px;">${row.School_Name}</strong><br><br>
+                            <b>IDP Students Added:</b> ${idpCount}<br>
+                            <b>AI Risk Score:</b> <span style="color:${riskColor}; font-weight:bold;">${row.Conflict_Risk_Score}</span><br>
+                            <b>Recommendation:</b> <span style="color:#2980b9;">${row.Action_Recommendation}</span><br>
+                            <small style="color:#7f8c8d;">Verified: ${row.Last_Conflict_Event}</small>
+                        `);
+                    }
+                });
+            },
+            error: function(err) {
+                console.log("CSV Yükleme Hatası:", err);
+            }
         });
-        return div;
-    };
-
-    legend.addTo(map);
-
-</script>
+    </script>
 </body>
 </html>
+
