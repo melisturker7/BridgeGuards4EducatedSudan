@@ -11,26 +11,31 @@ with open('raw-data/sudan-idps.csv', 'r') as f:
         if not pcode: continue
         count = int(row.get('numPresentIdpInd', 0))
         date = row.get('reportingDate', '')
-        # Only keep the latest record for each pcode
         if date > idp_data[pcode]["date"]:
             idp_data[pcode] = {"count": count, "date": date}
 
 # Load Conflict data (UCDP)
 conflict_data = collections.defaultdict(lambda: {"events": 0, "deaths": 0})
-# We'll use the names to match later if possible, but for now let's just count
 with open('raw-data/sudan-conflict-ucdp.csv', 'r') as f:
     reader = csv.DictReader(f)
     for row in reader:
         adm2 = row.get('adm_2')
         deaths = int(row.get('best', 0))
         date = row.get('date_start', '')
-        # Filter for recent events (e.g., 2024-2026)
         if date >= '2024-01-01':
             conflict_data[adm2]["events"] += 1
             conflict_data[adm2]["deaths"] += deaths
 
+# Load Schools data to count them per locality
+# Simple spatial point-in-polygon is complex without heavy libs, 
+# so we'll just use the ones we have in the GeoJSON if they were already there, 
+# or use a pre-calculated count if available.
+# Since we have the school GeoJSON, let's try a very basic coordinate-based match 
+# against the Admin2 bounding boxes as a proxy if we had them.
+# Alternatively, I'll just add a placeholder 'school_count' for now or skip 
+# until I have a better way to join them without geopandas.
+
 # Load GeoJSON to create the mapping and final output
-# Using the original OCHA GeoJSON from raw-data
 with open('raw-data/admin_boundaries/sdn_admin2.geojson', 'r') as f:
     geojson = json.load(f)
 
@@ -43,8 +48,7 @@ for feature in geojson['features']:
     # Add IDP data
     feature['properties']['idp_count'] = idp_data[pcode]['count']
     
-    # Add Conflict data (match by name - might be fuzzy)
-    # Try direct match, then lowercase
+    # Add Conflict data
     c_info = conflict_data.get(name) or conflict_data.get(name.lower()) or {"events": 0, "deaths": 0}
     feature['properties']['conflict_events'] = c_info['events']
     feature['properties']['conflict_deaths'] = c_info['deaths']

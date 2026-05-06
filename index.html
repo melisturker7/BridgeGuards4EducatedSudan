@@ -34,6 +34,17 @@
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    // School Icon
+    const schoolIcon = L.divIcon({
+        html: '<div style="background-color: #007bff; width: 10px; height: 10px; border-radius: 50%; border: 2px solid white;"></div>',
+        className: 'school-marker',
+        iconSize: [10, 10]
+    });
+
+    // Layer Groups
+    const schoolsLayer = L.layerGroup();
+    const safetyLayer = L.layerGroup().addTo(map);
+
     // Control that shows state info on hover
     const info = L.control();
 
@@ -107,9 +118,33 @@
             geojson = L.geoJson(data, {
                 style: style,
                 onEachFeature: onEachFeature
-            }).addTo(map);
+            }).addTo(safetyLayer);
         });
 
+    // Fetch and add Schools
+    fetch('data/sudan_schools.json')
+        .then(response => response.json())
+        .then(data => {
+            L.geoJson(data, {
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, { icon: schoolIcon });
+                },
+                onEachFeature: function (feature, layer) {
+                    const name = feature.properties.name || feature.properties['name:ar'] || 'Unnamed School';
+                    const type = feature.properties.amenity || 'Education Facility';
+                    layer.bindPopup(`<strong>${name}</strong><br>${type}`);
+                }
+            }).addTo(schoolsLayer);
+        });
+
+    // Layer Control
+    const overlays = {
+        "Safety Score": safetyLayer,
+        "School Facilities": schoolsLayer
+    };
+    L.control.layers(null, overlays, {collapsed: false}).addTo(map);
+
+    // Legend
     const legend = L.control({position: 'bottomright'});
 
     legend.onAdd = function (map) {
