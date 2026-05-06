@@ -48,7 +48,7 @@
         }
 
         // BURAYA DİKKAT: CSV'ni GitHub RAW adresinden doğrudan çekiyoruz!
-        var csvUrl = "https://raw.githubusercontent.com/melisturker7/BridgeGuards4EducatedSudan/main/data.csv";
+        var csvUrl = "data.csv";
 
         Papa.parse(csvUrl, {
             download: true,
@@ -74,10 +74,16 @@
 
                         marker.bindPopup(`
                             <strong style="font-size:14px;">${row.School_Name}</strong><br><br>
-                            <b>IDP Students Added:</b> ${idpCount}<br>
+                            <b>IDP Students Added:</b> ${idpCount.toLocaleString()}<br>
                             <b>AI Risk Score:</b> <span style="color:${riskColor}; font-weight:bold;">${row.Conflict_Risk_Score}</span><br>
+                            <hr>
+                            <b>Locality Capacity:</b><br>
+                            • Total Schools: ${row.Total_Schools || 0}<br>
+                            • Total Students: ${(parseInt(row.Total_Students) || 0).toLocaleString()}<br>
+                            • Student/Teacher Ratio: ${row.Student_Teacher_Ratio || "N/A"}<br>
+                            <hr>
                             <b>Recommendation:</b> <span style="color:#2980b9;">${row.Action_Recommendation}</span><br>
-                            <small style="color:#7f8c8d;">Verified: ${row.Last_Conflict_Event}</small>
+                            <small style="color:#7f8c8d;">Status: ${row.Last_Conflict_Event}</small>
                         `);
                     }
                 });
