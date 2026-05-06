@@ -6,7 +6,9 @@ import pandas as pd
 # HELPER: Normalize names for matching
 def normalize(name):
     if not name: return ""
-    return name.strip().lower().replace("-", " ").replace("  ", " ")
+    # Remove " district" which is common in UCDP data
+    name = name.lower().replace(" district", "").strip()
+    return name.replace("-", " ").replace("  ", " ")
 
 # 1. LOAD LOCALITY BOUNDARIES
 print("Loading official Sudan localities...")
@@ -56,21 +58,33 @@ with open('raw-data/sudan-idps.csv', 'r') as f:
         localities[pcode]['idp_count'] = data['count']
 
 # 3. LOAD & CLEAN CONFLICT DATA
-print("Processing Conflict data...")
+print("Processing Conflict data (UCDP)...")
+# Create a robust name-to-pcode map
 name_to_pcode = {normalize(loc['name']): pcode for pcode, loc in localities.items()}
+
+# Add common manual aliases if needed
+name_to_pcode['khartoum'] = 'SD01001' # Ensure Khartoum matches
+
 with open('raw-data/sudan-conflict-ucdp.csv', 'r') as f:
     reader = csv.DictReader(f)
+    matched_count = 0
     for row in reader:
         if row.get('iso3') != 'SDN': continue
+        
         date = row.get('date_start', '')
         if date < '2024-01-01': continue
+        
         adm2_raw = row.get('adm_2', '')
         pcode = name_to_pcode.get(normalize(adm2_raw))
+        
         if pcode:
+            matched_count += 1
             localities[pcode]['conflict_events'] += 1
             try:
                 localities[pcode]['conflict_deaths'] += int(row.get('best', 0))
             except: pass
+
+print(f"Matched {matched_count} conflict events to localities.")
 
 # 4. LOAD & AGGREGATE SCHOOL HXL DATA
 print("Processing HXL School data (19k records)...")
@@ -109,14 +123,13 @@ except Exception as e:
 print("Finalizing metrics...")
 output_rows = []
 for pcode, loc in localities.items():
-    # Risk Score logic
-    event_weight = min(loc['conflict_events'] * 5, 60)
-    death_weight = min(loc['conflict_deaths'] * 1, 40)
-    risk_score = event_weight + death_weight
+    # Risk Score logic (More sensitive)
+    # 1 event = 10 pts, 1 death = 2 pts
+    risk_score = (loc['conflict_events'] * 10) + (loc['conflict_deaths'] * 2)
     
     risk_level = "Low"
-    if risk_score > 60: risk_level = "High"
-    elif risk_score > 30: risk_level = "Medium"
+    if risk_score >= 50: risk_level = "High"
+    elif risk_score >= 10: risk_level = "Medium"
     
     # Recommendation logic based on IDP and Schools
     idp_impact = loc['idp_count']
@@ -124,7 +137,9 @@ for pcode, loc in localities.items():
     
     rec = "Maintain Support"
     if risk_level == "High":
-        rec = "DANGER: Monitor Security & Suspend Operations if needed"
+        rec = "DANGER: Active Conflict Zone - Evacuate and Suspend Operations"
+    elif risk_level == "Medium":
+        rec = "Monitor: Security Assessment Required Before Operation"
     elif idp_impact > 10000:
         rec = f"CRITICAL: Capacity Overload ({idp_impact} IDPs). Build Temp Classrooms."
     elif rehab_ratio > 40:

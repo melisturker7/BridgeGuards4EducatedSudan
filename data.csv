@@ -7,7 +7,7 @@ Locality: Abu Jubayhah,11.00225303,31.87498947,7956,Low,PRIORITY: Infrastructure
 Locality: Abu Karinka,11.57914993,26.55155487,207,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",26,8131,32.3
 Locality: Abu Kershola,11.98950039,30.76776196,3849,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",50,13895,33.2
 Locality: Abu Zabad,12.64563046,29.24488426,150,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",91,24216,34.6
-Locality: Abyei,10.83813199,27.62159136,130,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",56,15292,34.8
+Locality: Abyei,10.83813199,27.62159136,130,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"4 events, 91 deaths",56,15292,34.8
 Locality: Abyei PCA area,9.76237449,28.41709322,0,Low,Maintain Support,"0 events, 0 deaths",0,0,N/A
 Locality: Ad Dabbah,17.53417319,30.83792189,39748,Low,CRITICAL: Capacity Overload (39748 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",89,24711,19.9
 Locality: Ad Dali,12.53070086,33.35936185,352,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",43,14156,40.7
@@ -69,12 +69,12 @@ Locality: At Tadamon - BN,11.58397127,33.62429272,150,Low,PRIORITY: Infrastructu
 Locality: At Tadamon - SK,12.17390683,31.65869961,1137,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",44,12337,64.9
 Locality: At Tawisha,12.46603666,26.59554161,5675,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",39,18692,63.6
 Locality: At Tina,15.05944256,23.04252188,8210,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",13,5441,108.8
-Locality: Atbara,17.89335615,32.83218849,192,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",88,25829,19.5
+Locality: Atbara,17.89335615,32.83218849,192,Medium,Monitor: Security Assessment Required Before Operation,"1 events, 12 deaths",88,25829,19.5
 Locality: Azum,12.94820543,23.06771412,11170,Low,CRITICAL: Capacity Overload (11170 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",30,15979,44.5
 Locality: Babanusa,11.37669896,27.68876925,54,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",36,12096,37.6
 Locality: Bahr Al Arab,10.41881794,26.70647191,811,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",60,12404,57.2
-Locality: Bahri,15.97564536,32.73688341,375,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",455,39199,6.2
-Locality: Bara,14.0128696,31.27995757,2170,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",193,45366,38.7
+Locality: Bahri,15.97564536,32.73688341,375,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"18 events, 179 deaths",455,39199,6.2
+Locality: Bara,14.0128696,31.27995757,2170,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"2 events, 17 deaths",193,45366,38.7
 Locality: Barbar,18.14300537,33.86300056,18,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",120,33298,25.1
 Locality: Basundah,12.92299022,35.82558416,1120,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",44,14903,38.3
 Locality: Baw,11.16156286,33.77962309,2605,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",25,8111,25.9
@@ -86,7 +86,7 @@ Locality: Damso,10.75486669,24.47288671,21,Low,PRIORITY: Infrastructure Rehabili
 Locality: Dar As Salam,13.22982289,25.33650993,153278,Low,CRITICAL: Capacity Overload (153278 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",41,17651,86.5
 Locality: Delami,11.64742867,30.33728711,55,Low,URGENT: WASH Support Required (Water Access < 50%),"0 events, 0 deaths",5,1224,29.1
 Locality: Delgo,20.09078069,28.67004542,70,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",54,6259,9.7
-Locality: Dilling,11.95274992,29.45695817,5120,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",60,22799,31.4
+Locality: Dilling,11.95274992,29.45695817,5120,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"6 events, 55 deaths",60,22799,31.4
 Locality: Dongola,19.23888355,29.73603278,10,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",116,35671,20.4
 Locality: Dordieb,17.49740601,35.81877295,855,Low,URGENT: WASH Support Required (Water Access < 50%),"0 events, 0 deaths",31,3758,27.6
 Locality: Ed Al Fursan,11.71453242,24.34328464,250,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",114,23386,50.7
@@ -110,30 +110,30 @@ Locality: Halfa Aj Jadeedah,15.5637914,35.55710226,7949,Low,PRIORITY: Infrastruc
 Locality: Haya,17.97071507,35.34949509,10,Low,URGENT: WASH Support Required (Water Access < 50%),"0 events, 0 deaths",54,7065,38.0
 Locality: Heiban,11.14661037,30.46898903,0,Low,Maintain Support,"0 events, 0 deaths",0,0,N/A
 Locality: Janub Al Jazirah,14.09195335,33.46363502,10,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",383,127395,28.4
-Locality: Jebel Awlia,15.35549472,32.59018378,15,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",387,155486,30.0
-Locality: Jebel Moon,14.07850775,22.84489619,25,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",26,6574,61.4
+Locality: Jebel Awlia,15.35549472,32.59018378,15,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"36 events, 325 deaths",387,155486,30.0
+Locality: Jebel Moon,14.07850775,22.84489619,25,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"1 events, 24 deaths",26,6574,61.4
 Locality: Jubayt Elma'aadin,21.15698242,34.91143159,196,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",23,1609,16.8
-Locality: Kadugli,11.0888587,29.56462632,5,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",32,20366,32.0
+Locality: Kadugli,11.0888587,29.56462632,5,Medium,Monitor: Security Assessment Required Before Operation,"1 events, 1 deaths",32,20366,32.0
 Locality: Karrari,16.02374634,32.33816726,2788,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",704,173265,18.6
 Locality: Kas,12.43907573,24.2082075,1900,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",140,49879,55.2
 Locality: Kateila,11.02328491,24.29271352,1489,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",45,11831,33.1
-Locality: Kebkabiya,13.61318589,24.17930205,1850,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",66,22874,39.9
-Locality: Keilak,10.63256073,29.33505478,160,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",53,11256,53.6
+Locality: Kebkabiya,13.61318589,24.17930205,1850,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"13 events, 160 deaths",66,22874,39.9
+Locality: Keilak,10.63256073,29.33505478,160,Medium,Monitor: Security Assessment Required Before Operation,"1 events, 2 deaths",53,11256,53.6
 Locality: Kelemando,13.12410301,25.93858535,105,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",41,12152,56.8
 Locality: Kereneik,13.2915252,22.84201265,365,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",95,34778,60.9
 Locality: Kernoi,14.91051423,23.45755264,15,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",38,22604,138.7
 Locality: Khartoum,15.55208388,32.54686646,155,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",438,105070,12.4
-Locality: Kosti,12.93081665,32.66218588,1279,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",121,56357,33.3
-Locality: Kubum,11.74151398,23.8802792,15,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",77,18141,53.7
-Locality: Kulbus,14.60767942,22.63647446,31082,Low,CRITICAL: Capacity Overload (31082 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",32,6791,34.1
-Locality: Kutum,14.49143853,24.69140141,20,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",96,32315,42.1
+Locality: Kosti,12.93081665,32.66218588,1279,Medium,Monitor: Security Assessment Required Before Operation,"1 events, 2 deaths",121,56357,33.3
+Locality: Kubum,11.74151398,23.8802792,15,Medium,Monitor: Security Assessment Required Before Operation,"1 events, 4 deaths",77,18141,53.7
+Locality: Kulbus,14.60767942,22.63647446,31082,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"5 events, 37 deaths",32,6791,34.1
+Locality: Kutum,14.49143853,24.69140141,20,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"22 events, 212 deaths",96,32315,42.1
 Locality: Madeinat Al Gedaref,14.02637517,35.36756142,1355,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",143,68880,39.9
 Locality: Madeinat Kassala,15.43363808,36.37177473,3415,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",181,68136,26.6
 Locality: Medani Al Kubra,14.32974208,33.63048568,100,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",248,95031,25.3
 Locality: Melit,14.20426227,26.19533112,45,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",72,25018,41.3
 Locality: Mershing,12.51638794,24.97931403,7875,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",53,13998,44.2
 Locality: Merwoe,18.37454422,31.93965688,2180,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",125,32295,17.8
-Locality: Mukjar,11.81471546,23.39152148,28750,Low,CRITICAL: Capacity Overload (28750 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",34,11240,47.0
+Locality: Mukjar,11.81471546,23.39152148,28750,Medium,Monitor: Security Assessment Required Before Operation,"2 events, 4 deaths",34,11240,47.0
 Locality: Nitega,12.60307735,25.29436258,14,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",36,7803,44.1
 Locality: Nyala Janoub,12.0208916,24.8262383,75139,Low,CRITICAL: Capacity Overload (75139 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",263,84935,22.8
 Locality: Nyala Shimal,12.4342245,24.6836335,319917,Low,CRITICAL: Capacity Overload (319917 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",138,44642,23.3
@@ -149,9 +149,9 @@ Locality: Reifi Nahr Atbara,15.72388675,35.39765007,1090,Low,PRIORITY: Infrastru
 Locality: Reifi Shamal Ad Delta,16.58348843,35.96957676,300,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",32,7473,37.9
 Locality: Reifi Telkok,16.15412479,36.63884292,970,Low,URGENT: WASH Support Required (Water Access < 50%),"0 events, 0 deaths",45,8903,50.6
 Locality: Reifi Wad Elhilaiw,14.60650203,36.19335101,550,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",61,20180,35.6
-Locality: Saraf Omra,13.64043122,23.28901653,5575,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",39,13435,50.7
+Locality: Saraf Omra,13.64043122,23.28901653,5575,Medium,Monitor: Security Assessment Required Before Operation,"1 events, 12 deaths",39,13435,50.7
 Locality: Sawakin,19.02627712,37.24023157,5,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",37,9294,26.3
-Locality: Sennar,13.55593538,33.30211973,20,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",196,71681,35.7
+Locality: Sennar,13.55593538,33.30211973,20,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"12 events, 148 deaths",196,71681,35.7
 Locality: Shamal Jabal Marrah,13.27293648,24.44775977,54558,Low,CRITICAL: Capacity Overload (54558 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",22,9253,90.7
 Locality: Sharg Aj Jabal,12.90876555,24.49504608,10346,Low,CRITICAL: Capacity Overload (10346 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",31,13130,126.2
 Locality: Sharg Al Jazirah,15.01554949,33.66792461,2395,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",390,126424,38.1
@@ -159,16 +159,16 @@ Locality: Sharg An Neel,15.69110107,33.31993167,465,Low,PRIORITY: Infrastructure
 Locality: Sharg Sennar,13.74539203,33.86560254,1639,Low,URGENT: WASH Support Required (Water Access < 50%),"0 events, 0 deaths",176,54860,34.7
 Locality: Shattaya,12.34768999,23.8692448,694,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",18,3648,59.8
 Locality: Sheikan,13.03542861,30.03226473,756,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",377,138397,37.1
-Locality: Shendi,16.37537043,33.55838674,16,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",181,55349,29.6
+Locality: Shendi,16.37537043,33.55838674,16,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"5 events, 15 deaths",181,55349,29.6
 Locality: Shia'ria,12.58805293,25.70066887,31576,Low,CRITICAL: Capacity Overload (31576 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",31,10296,44.8
 Locality: Sinja,13.1288376,33.78666667,740,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",85,30559,29.8
-Locality: Sinkat,18.90184214,36.60137853,16,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",43,10182,26.0
+Locality: Sinkat,18.90184214,36.60137853,16,Medium,Monitor: Security Assessment Required Before Operation,"1 events, 5 deaths",43,10182,26.0
 Locality: Sirba,13.82471568,22.42332323,85,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",30,13623,85.7
 Locality: Soudari,15.17409925,28.25385032,2938,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",134,24273,43.5
 Locality: Talawdi,10.54181428,30.43699872,10,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",19,3377,31.3
 Locality: Tawila,13.3137602,24.90311514,8809,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",24,14954,75.5
 Locality: Tawkar,17.93698867,37.26496634,10,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",35,8773,42.4
-Locality: Tendalti,13.11949441,32.05579195,7634,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",131,31407,38.1
+Locality: Tendalti,13.11949441,32.05579195,7634,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"2 events, 18 deaths",131,31407,38.1
 Locality: Tulus,11.26177979,25.00363191,75,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",56,12953,38.4
 Locality: Um Algura,14.45818768,33.86581441,3485,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",142,57713,44.8
 Locality: Um Bada,16.128221,31.89716985,3372,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",571,204571,28.2
@@ -179,7 +179,7 @@ Locality: Um Dukhun,11.37820435,23.15049025,1750,Low,PRIORITY: Infrastructure Re
 Locality: Um Durein,10.92386462,30.13257183,0,Low,Maintain Support,"0 events, 0 deaths",0,0,N/A
 Locality: Um Durman,15.44088282,32.34223472,2385,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",417,115891,17.9
 Locality: Um Kadadah,13.48500806,26.92415947,31015,Low,CRITICAL: Capacity Overload (31015 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",92,22837,39.0
-Locality: Um Rawaba,13.16128522,31.40624559,11755,Low,CRITICAL: Capacity Overload (11755 IDPs). Build Temp Classrooms.,"0 events, 0 deaths",311,83312,49.8
+Locality: Um Rawaba,13.16128522,31.40624559,11755,High,DANGER: Active Conflict Zone - Evacuate and Suspend Operations,"15 events, 168 deaths",311,83312,49.8
 Locality: Um Rimta,14.60650635,31.87586233,2125,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",86,27021,34.1
 Locality: Wad Al Mahi,11.59554025,34.75346101,60,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",20,5716,26.8
 Locality: Wad Bandah,13.30163476,27.78352964,9939,Low,PRIORITY: Infrastructure Rehabilitation Needed.,"0 events, 0 deaths",135,30708,41.2
