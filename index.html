@@ -58,16 +58,22 @@
 
     // Color Logic for Conflict Risk Score
     function getRiskColor(score) {
-        return score > 80 ? '#B22222' : // FireBrick (Critical)
-               score > 60 ? '#FF4500' : // OrangeRed (High)
-               score > 40 ? '#FFD700' : // Gold (Moderate)
-               score > 20 ? '#ADFF2F' : // GreenYellow (Low)
-                            '#228B22';   // ForestGreen (Safe)
+        if (typeof score === 'string') {
+            const s = score.toLowerCase();
+            if (s.includes('high') || s.includes('danger')) return '#B22222';
+            if (s.includes('medium') || s.includes('monitor')) return '#FFD700';
+            if (s.includes('low') || s.includes('safe')) return '#228B22';
+        }
+        return score > 80 ? '#B22222' : 
+               score > 60 ? '#FF4500' : 
+               score > 40 ? '#FFD700' : 
+               score > 20 ? '#ADFF2F' : 
+                            '#228B22';
     }
 
     // Radius Logic based on IDP Students Added
     function getRadius(count) {
-        return Math.sqrt(count) * 0.1 + 5;
+        return Math.sqrt(count) * 0.2 + 8; // Slightly larger for visibility
     }
 
     // Load and Parse CSV Data
@@ -76,7 +82,7 @@
         header: true,
         skipEmptyLines: true,
         transformHeader: function(h) {
-            return h.trim(); // Crucial: Fixes "undefined" by removing whitespace from headers
+            return h.trim();
         },
         complete: function(results) {
             console.log("Parsed CSV Results:", results.data);
@@ -85,14 +91,13 @@
                 const lat = parseFloat(row.Latitude);
                 const lon = parseFloat(row.Longitude);
                 const idpCount = parseInt(row.IDP_Students_Added) || 0;
-                const riskScore = parseFloat(row.Conflict_Risk_Score) || 0;
-                const locality = row.Locality || "Unknown Locality";
-                const state = row.State || "Unknown State";
-
+                const riskLevel = row.Conflict_Risk_Score || "Unknown";
+                const schoolName = row.School_Name || "Unnamed School";
+                
                 if (!isNaN(lat) && !isNaN(lon)) {
                     const circle = L.circleMarker([lat, lon], {
                         radius: getRadius(idpCount),
-                        fillColor: getRiskColor(riskScore),
+                        fillColor: getRiskColor(riskLevel),
                         color: "#fff",
                         weight: 1,
                         opacity: 1,
@@ -102,13 +107,17 @@
                     // Robust Popup Template
                     const popupContent = `
                         <div class="info">
-                            <h4>${locality}</h4>
-                            <b>State:</b> ${state}<br>
+                            <h4>${schoolName}</h4>
                             <b>IDP Students Added:</b> ${idpCount.toLocaleString()}<br>
-                            <b>Conflict Risk Score:</b> ${riskScore.toFixed(1)}%<br>
+                            <b>Conflict Risk:</b> <span style="color:${getRiskColor(riskLevel)}">${riskLevel}</span><br>
                             <hr>
-                            <small>Conflict Events (Recent): ${row.Conflict_Events || 0}</small><br>
-                            <small>Fatalities (Recent): ${row.Conflict_Deaths || 0}</small>
+                            <b>Action Recommendation:</b><br>
+                            <div style="margin-top:5px; padding:5px; background:#fcf8e3; border-left:3px solid #f0ad4e; font-size:12px;">
+                                ${row.Action_Recommendation || "Monitor status"}
+                            </div>
+                            <small style="display:block; margin-top:8px; color:#666;">
+                                Last Event: ${row.Last_Conflict_Event || "N/A"}
+                            </small>
                         </div>
                     `;
                     circle.bindPopup(popupContent);
@@ -134,14 +143,13 @@
 
     legend.onAdd = function (map) {
         const div = L.DomUtil.create('div', 'info legend');
-        const grades = [0, 20, 40, 60, 80];
-        const labels = ['<strong>Conflict Risk Score</strong>'];
-
-        for (let i = 0; i < grades.length; i++) {
+        const categories = ['High', 'Medium', 'Low'];
+        
+        div.innerHTML = '<strong>Conflict Risk Level</strong><br>';
+        categories.forEach(cat => {
             div.innerHTML +=
-                '<i style="background:' + getRiskColor(grades[i] + 1) + '"></i> ' +
-                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '%' : '+%') + '<br>';
-        }
+                '<i style="background:' + getRiskColor(cat) + '"></i> ' + cat + '<br>';
+        });
         return div;
     };
 
