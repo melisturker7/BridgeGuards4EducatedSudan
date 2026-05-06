@@ -61,7 +61,7 @@
                     if(row.Latitude && row.Longitude) {
                         var riskColor = getColor(row.Conflict_Risk_Score);
                         var idpCount = row.IDP_Students_Added || 0;
-                        var radiusSize = (idpCount / 40) + 8;
+                        var radiusSize = Math.sqrt(idpCount) * 0.08 + 6;
 
                         var marker = L.circleMarker([row.Latitude, row.Longitude], {
                             radius: radiusSize,
