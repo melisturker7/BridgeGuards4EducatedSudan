@@ -2,7 +2,7 @@ import json
 import csv
 
 # Load the already processed data
-with open('data/sudan_map_data.json', 'r') as f:
+with open('../data/processed/sudan_map_data.json', 'r') as f:
     geojson = json.load(f)
 
 # Field names for the CSV as requested by the user
@@ -12,7 +12,7 @@ fieldnames = [
     'Conflict_Events', 'Conflict_Deaths'
 ]
 
-with open('data.csv', 'w', newline='') as f:
+with open('../data/processed/data.csv', 'w', newline='') as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
     
@@ -34,4 +34,4 @@ with open('data.csv', 'w', newline='') as f:
             'Conflict_Deaths': props.get('conflict_deaths', 0)
         })
 
-print("Created data.csv for PapaParse integration.")
+print("Created ../data/processed/data.csv for PapaParse integration.")

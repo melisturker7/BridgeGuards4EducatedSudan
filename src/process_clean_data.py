@@ -13,7 +13,7 @@ def normalize(name):
 # 1. LOAD LOCALITY BOUNDARIES
 print("Loading official Sudan localities...")
 localities = {}
-with open('raw-data/admin_boundaries/sdn_admin2.geojson', 'r') as f:
+with open('../data/raw/admin_boundaries/sdn_admin2.geojson', 'r') as f:
     geojson = json.load(f)
     for feature in geojson['features']:
         props = feature['properties']
@@ -40,7 +40,7 @@ with open('raw-data/admin_boundaries/sdn_admin2.geojson', 'r') as f:
 
 # 2. LOAD & CLEAN IDP DATA
 print("Processing IDP data...")
-with open('raw-data/sudan-idps.csv', 'r') as f:
+with open('../data/raw/sudan-idps.csv', 'r') as f:
     reader = csv.DictReader(f)
     latest_idp = {} # pcode -> {count, date}
     for row in reader:
@@ -65,7 +65,7 @@ name_to_pcode = {normalize(loc['name']): pcode for pcode, loc in localities.item
 # Add common manual aliases if needed
 name_to_pcode['khartoum'] = 'SD01001' # Ensure Khartoum matches
 
-with open('raw-data/sudan-conflict-ucdp.csv', 'r') as f:
+with open('../data/raw/sudan-conflict-ucdp.csv', 'r') as f:
     reader = csv.DictReader(f)
     matched_count = 0
     for row in reader:
@@ -89,7 +89,7 @@ print(f"Matched {matched_count} conflict events to localities.")
 # 4. LOAD & AGGREGATE SCHOOL HXL DATA
 print("Processing HXL School data (19k records)...")
 try:
-    df_schools = pd.read_excel('raw-data/sudan-schools_hxl.xlsx', skiprows=[1])
+    df_schools = pd.read_excel('../data/raw/sudan-schools_hxl.xlsx', skiprows=[1])
     
     # Ensure numeric types
     cols_to_fix = ['students_total', 'teachers', 'Total_Classrooms', 'Needs Rehabilitation']
@@ -168,9 +168,9 @@ fieldnames = [
     'Total_Schools', 'Total_Students', 'Student_Teacher_Ratio'
 ]
 
-with open('data.csv', 'w', newline='') as f:
+with open('../data/processed/data.csv', 'w', newline='') as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
     writer.writerows(output_rows)
 
-print(f"Clean dataset generated: data.csv ({len(output_rows)} localities processed)")
+print(f"Clean dataset generated: ../data/processed/data.csv ({len(output_rows)} localities processed)")
